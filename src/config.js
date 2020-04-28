@@ -1,24 +1,39 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME || 'asdf.test'; /* TODO: fill this in! */
+const CONTRACT_NAME = process.env.CONTRACT_NAME || 'asdf.test'; /* TODO: change this to your account */
 
 function getConfig(env) {
     switch (env) {
 
         case 'production':
+            return {
+                networkId: 'mainnet',
+                nodeUrl: 'https://rpc.mainnet.nearprotocol.com',
+                contractName: CONTRACT_NAME,
+                walletUrl: 'https://wallet.mainnet.nearprotocol.com',
+                helperUrl: 'https://helper.mainnet.nearprotocol.com',
+            };
         case 'development':
             return {
                 networkId: 'default',
-                nodeUrl: 'https://rpc.nearprotocol.com',
+                nodeUrl: 'https://rpc.testnet.nearprotocol.com',
                 contractName: CONTRACT_NAME,
-                walletUrl: 'https://wallet.nearprotocol.com',
-                helperUrl: 'https://near-contract-helper.onrender.com',
+                walletUrl: 'https://wallet.testnet.nearprotocol.com',
+                helperUrl: 'https://helper.testnet.nearprotocol.com',
             };
-        case 'staging':
+        case 'devnet':
             return {
-                networkId: 'staging',
-                nodeUrl: 'https://staging-rpc.nearprotocol.com/',
+                networkId: 'devnet',
+                nodeUrl: 'https://rpc.devnet.nearprotocol.com',
                 contractName: CONTRACT_NAME,
-                walletUrl: 'https://near-wallet-staging.onrender.com',
-                helperUrl: 'https://near-contract-helper-staging.onrender.com',
+                walletUrl: 'https://wallet.devnet.nearprotocol.com',
+                helperUrl: 'https://helper.devnet.nearprotocol.com',
+            };
+        case 'betanet':
+            return {
+                networkId: 'betanet',
+                nodeUrl: 'https://rpc.betanet.nearprotocol.com',
+                contractName: CONTRACT_NAME,
+                walletUrl: 'https://wallet.betanet.nearprotocol.com',
+                helperUrl: 'https://helper.betanet.nearprotocol.com',
             };
         case 'local':
             return {
