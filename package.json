@@ -8,7 +8,7 @@
     "postbuild": "cp contract/target/wasm32-unknown-unknown/release/rust_counter_tutorial.wasm ./out/main.wasm",
     "deploy:contract": "near deploy",
     "deploy:pages": "gh-pages -d src",
-    "deploy": "yarn build && yarn deploy:contract && yarn deploy:pages",
+    "deploy": "yarn build && yarn deploy:contract",
     "deploy:dev": "yarn build && near dev-deploy",
     "dev": "yarn deploy:dev && yarn start:dev",
     "prestart": "yarn build && yarn deploy:contract",
