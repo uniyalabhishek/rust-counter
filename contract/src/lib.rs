@@ -69,7 +69,6 @@ impl Counter {
             Some(&val) => val,
             None => 0i8
         };
-        // recommended to remove ".clone()" here and follow messages for explanation
         self.user_counters.insert(caller.clone(), current_val + 1);
 
         // this will panic if it's not added (but we know it's there)
@@ -83,7 +82,7 @@ impl Counter {
     /// decrement (subtract from) the counter *per account* that calls it
     // in (/src/main.js) this is also added to the "changeMethods" array
     // using near-shell we can call this by:
-    // near call counter.YOU.testnet increment --accountId donation.YOU.testnet
+    // near call counter.YOU.testnet decrement --accountId donation.YOU.testnet
     pub fn decrement(&mut self) {
         // note: subtracting one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
