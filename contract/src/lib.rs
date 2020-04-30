@@ -1,17 +1,22 @@
 use borsh::{BorshDeserialize, BorshSerialize};
-use near_sdk::{env, near_bindgen};
-use std::collections::HashMap;
+// note the custom type AccountId, which is essentially a String
+// to see the other types visit the link below and select the version if needed:
+//   https://docs.rs/near-vm-logic/0.8.0/near_vm_logic/types/index.html
+use near_sdk::{AccountId, env, near_bindgen};
+use near_sdk::collections::Map;
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // add the following attributes to prepare your code for serialization and invocation on the blockchain
-// More built-in Rust attributes here: https://doc.rust-lang.org/reference/attributes.html#built-in-attributes-index
+// more built-in Rust attributes here: https://doc.rust-lang.org/reference/attributes.html#built-in-attributes-index
 #[near_bindgen]
 #[derive(Default, BorshDeserialize, BorshSerialize)]
 pub struct Counter {
-    // See more data types at https://doc.rust-lang.org/book/ch03-02-data-types.html
-    user_counters: HashMap<String, i8>,
+    // see more data types at https://doc.rust-lang.org/book/ch03-02-data-types.html
+    // see performant data structures (like Map) here:
+    //   https://github.com/near/near-sdk-rs/tree/master/near-sdk/src/collections
+    user_counters: Map<AccountId, i8>,
 }
 
 #[near_bindgen]
@@ -22,7 +27,7 @@ impl Counter {
         // useful snippet to copy/paste, making sure state isn't already initialized
         assert!(env::state_read::<Self>().is_none(), "Already initialized");
         Self {
-            user_counters: HashMap::new(),
+            user_counters: Map::new(b"my id which is super unique".to_vec()),
         }
     }
 
@@ -31,7 +36,7 @@ impl Counter {
     // in the frontend (/src/main.js) this is added to the "viewMethods" array
     // using near-shell we can call this by:
     // near view counter.YOU.testnet get_num '{"account": "donation.YOU.testnet"}'
-    pub fn get_num(&self, account: String) -> i8 {
+    pub fn get_num(&self, account: AccountId) -> i8 {
         // call our first private function
         // try removing the .clone() below and note the error. this may happen from time to time
         let caller_num = self.get_num_from_signer(account.clone());
@@ -43,14 +48,14 @@ impl Counter {
     }
 
     // our first private functions
-    fn get_num_from_signer(&self, account: String) -> i8 {
+    fn get_num_from_signer(&self, account: AccountId) -> i8 {
         // notice we've chosen to use an implicit "return" here
         match self.user_counters.get(&account) {
             Some(num) => {
-                // found account user in hashmap, return the number
-                *num
+                // found account user in map, return the number
+                num
             },
-            // did not find the account in the hashmap
+            // did not find the account in the map
             // note: curly brackets after arrow are optional in simple cases, like other languages
             None => 0
         }
@@ -66,15 +71,13 @@ impl Counter {
         // real smart contracts will want to have safety checks
         let caller = env::signer_account_id();
         let current_val = match self.user_counters.get(&caller) {
-            Some(&val) => val,
+            Some(val) => val,
             None => 0i8
         };
-        self.user_counters.insert(caller.clone(), current_val + 1);
+        let new_value = current_val + 1;
+        self.user_counters.insert(&caller.clone(), &new_value);
 
-        // this will panic if it's not added (but we know it's there)
-        let counter_val = self.user_counters[&caller];
-
-        let log_message = format!("Incremented to {}", counter_val);
+        let log_message = format!("Incremented to {}", new_value);
         env::log(log_message.as_bytes());
         after_counter_change();
     }
@@ -87,12 +90,16 @@ impl Counter {
         // note: subtracting one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
         let caller = env::signer_account_id();
+        // TODO move this comment
         // we'll use a slightly different approach to illustrate dereferencing (the "*")
-        // see https://doc.rust-lang.org/book/ch08-03-hash-maps.html#updating-a-value-based-on-the-old-value
-        let count = self.user_counters.entry(caller).or_insert(0);
-        *count -= 1;
+        let current_val = match self.user_counters.get(&caller) {
+            Some(val) => val,
+            None => 0i8
+        };
+        let new_value = current_val - 1;
+        self.user_counters.insert(&caller.clone(), &new_value);
 
-        let log_message = format!("Decreased number to {}", count);
+        let log_message = format!("Decreased number to {}", new_value);
         env::log(log_message.as_bytes());
         after_counter_change();
     }
@@ -101,7 +108,7 @@ impl Counter {
     pub fn reset(&mut self) {
         let caller = env::signer_account_id();
         // 0 casted as i8 data type is "0i8"
-        self.user_counters.insert(caller, 0i8);
+        self.user_counters.insert(&caller, &0i8);
         // Another way to log on NEAR is to cast a string into bytes, hence "b" below:
         env::log(b"Reset counter to zero");
     }
@@ -130,7 +137,7 @@ mod tests {
 
     // part of writing unit tests is setting up a mock context
     // this is also a useful list to peek at when wondering what's available in env::*
-    fn get_context(input: Vec<u8>, is_view: bool, signer: String) -> VMContext {
+    fn get_context(input: Vec<u8>, is_view: bool, signer: AccountId) -> VMContext {
         VMContext {
             current_account_id: "alice.testnet".to_string(),
             signer_account_id: signer,
