@@ -90,8 +90,6 @@ impl Counter {
         // note: subtracting one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
         let caller = env::signer_account_id();
-        // TODO move this comment
-        // we'll use a slightly different approach to illustrate dereferencing (the "*")
         let current_val = match self.user_counters.get(&caller) {
             Some(val) => val,
             None => 0i8
