@@ -1,6 +1,16 @@
+//! This contract implements simple counter backed by storage on blockchain.
+//!
+//! The contract provides methods to [increment] / [decrement] counter and
+//! [get it's current value][get_num] or [reset].
+//!
+//! [increment]: struct.Counter.html#method.increment
+//! [decrement]: struct.Counter.html#method.decrement
+//! [get_num]: struct.Counter.html#method.get_num
+//! [reset]: struct.Counter.html#method.reset
+use std::collections::HashMap;
+
 use borsh::{BorshDeserialize, BorshSerialize};
 use near_sdk::{env, near_bindgen};
-use std::collections::HashMap;
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -16,59 +26,59 @@ pub struct Counter {
 
 #[near_bindgen]
 impl Counter {
-    // init attribute used for instantiation
+    /// Init attribute used for instantiation.
     #[init]
     pub fn new() -> Self {
         // useful snippet to copy/paste, making sure state isn't already initialized
         assert!(env::state_read::<Self>().is_none(), "Already initialized");
+        // notice we've chosen to use an implicit "return" here
         Self {
             user_counters: HashMap::new(),
         }
     }
 
-    /// returns 8-bit signed integer representing the number for the account argument
-    // note the parameter is &self (without being mutable) meaning it doesn't modify state
-    // in the frontend (/src/main.js) this is added to the "viewMethods" array
-    // using near-shell we can call this by:
-    // near view counter.YOU.testnet get_num '{"account": "donation.YOU.testnet"}'
+    /// Returns 8-bit signed integer representing the number for the account argument.
+    ///
+    /// Note, the parameter is &self (without being mutable) meaning it doesn't modify state.
+    /// In the frontend (/src/main.js) this is added to the "viewMethods" array
+    /// using near-shell we can call this by:
+    ///
+    /// ```bash
+    /// near view counter.YOU.testnet get_num '{"account": "donation.YOU.testnet"}'
+    /// ```
     pub fn get_num(&self, account: String) -> i8 {
         // call our first private function
         // try removing the .clone() below and note the error. this may happen from time to time
+        // (learn more about Rust ownership later: https://doc.rust-lang.org/nomicon/ownership.html)
         let caller_num = self.get_num_from_signer(account.clone());
 
         // here's a way to format multiple variables in order to log them
         let log_message = format!("{}'s number: {}", account, caller_num);
         env::log(log_message.as_bytes());
-        return caller_num;
+        // notice we've chosen to use an implicit "return" here
+        caller_num
     }
 
     // our first private functions
     fn get_num_from_signer(&self, account: String) -> i8 {
         // notice we've chosen to use an implicit "return" here
-        match self.user_counters.get(&account) {
-            Some(num) => {
-                // found account user in hashmap, return the number
-                *num
-            },
-            // did not find the account in the hashmap
-            // note: curly brackets after arrow are optional in simple cases, like other languages
-            None => 0
-        }
+        self.user_counters.get(&account).cloned().unwrap_or(0)
     }
 
-    /// increment the counter *per account* that calls it
-    // note the parameter is "&mut self" as this function modifies state
-    // in the frontend (/src/main.js) this is added to the "changeMethods" array
-    // using near-shell we can call this by:
-    // near call counter.YOU.testnet increment --accountId donation.YOU.testnet
+    /// Increment the counter *per account* that calls it.
+    ///
+    /// Note, the parameter is "&mut self" as this function modifies state.
+    /// In the frontend (/src/main.js) this is added to the "changeMethods" array
+    /// using near-shell we can call this by:
+    ///
+    /// ```bash
+    /// near call counter.YOU.testnet increment --accountId donation.YOU.testnet
+    /// ```
     pub fn increment(&mut self) {
         // note: adding one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
         let caller = env::signer_account_id();
-        let current_val = match self.user_counters.get(&caller) {
-            Some(&val) => val,
-            None => 0i8
-        };
+        let current_val = self.user_counters.get(&caller).cloned().unwrap_or(0);
         self.user_counters.insert(caller.clone(), current_val + 1);
 
         // this will panic if it's not added (but we know it's there)
@@ -79,10 +89,14 @@ impl Counter {
         after_counter_change();
     }
 
-    /// decrement (subtract from) the counter *per account* that calls it
-    // in (/src/main.js) this is also added to the "changeMethods" array
-    // using near-shell we can call this by:
-    // near call counter.YOU.testnet decrement --accountId donation.YOU.testnet
+    /// Decrement (subtract from) the counter *per account* that calls it.
+    ///
+    /// In (/src/main.js) this is also added to the "changeMethods" array
+    /// using near-shell we can call this by:
+    ///
+    /// ```bash
+    /// near call counter.YOU.testnet decrement --accountId donation.YOU.testnet
+    /// ```
     pub fn decrement(&mut self) {
         // note: subtracting one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
@@ -97,11 +111,10 @@ impl Counter {
         after_counter_change();
     }
 
-    /// reset to zero
+    /// Reset to zero.
     pub fn reset(&mut self) {
         let caller = env::signer_account_id();
-        // 0 casted as i8 data type is "0i8"
-        self.user_counters.insert(caller, 0i8);
+        self.user_counters.insert(caller, 0);
         // Another way to log on NEAR is to cast a string into bytes, hence "b" below:
         env::log(b"Reset counter to zero");
     }
@@ -110,7 +123,7 @@ impl Counter {
 // unlike the struct's functions above, this function cannot use attributes #[derive(…)] or #[near_bindgen]
 // any attempts will throw helpful warnings upon 'cargo build'
 // while this function cannot be invoked directly on the blockchain, it can be called from an invoked function
-pub fn after_counter_change() {
+fn after_counter_change() {
     // show helpful warning that i8 (8-bit signed integer) will overflow above 127 or below -128
     env::log(b"Make sure you don't overflow, my friend.");
 }
@@ -147,7 +160,7 @@ mod tests {
             random_seed: vec![0, 1, 2],
             is_view,
             output_data_receivers: vec![],
-            epoch_height: 19
+            epoch_height: 19,
         }
     }
 
