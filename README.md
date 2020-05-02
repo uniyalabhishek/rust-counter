@@ -10,7 +10,7 @@ Counter example in Rust
 This contract implements simple counter backed by storage on blockchain.
 Contract in `contract/src/lib.rs` provides methods to increment / decrement counter and get it's current value or reset.
 
-Plus and minus buttons increase and decrease value correspondingly. When button L is toggled, counter will add or minus 10 a time. RS button is for reset. LE and RE buttons to let the robot wink at you.
+Plus and minus buttons increase and decrease value correspondingly. When button L is toggled, a little light turns on, just for fun. RS button is for reset. LE and RE buttons to let the robot wink at you.
 
 ## To Run
 Open in the Gitpod link above or clone the repository.
