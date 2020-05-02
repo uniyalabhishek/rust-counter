@@ -22,10 +22,12 @@ github:
 
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - before: nvm use default
-    init: yarn && npm install near-shell -g --no-optional
-    command: gp open README-Gitpod.md && npm install near-shell -g --no-optional && yarn dev
+  - before: nvm use default && npm install near-shell -g --no-optional
+    init: yarn && yarn build
+    command: gp open README-Gitpod.md && yarn dev
 
 ports:
   - port: 1234
     onOpen: open-browser
+  - port: 5000
+    onOpen: ignore
