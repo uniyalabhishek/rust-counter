@@ -1,0 +1,12 @@
+[workspace]
+members = [ "contracts/*" ]
+default-members = [ "contracts/counter", "contracts/donation" ]
+
+[profile.release]
+codegen-units = 1
+# Tell `rustc` to optimize for small code size.
+# https://rustwasm.github.io/docs/book/reference/code-size.html#optimizing-builds-for-code-size
+opt-level = "s"
+lto = true
+debug = false
+panic = "abort"

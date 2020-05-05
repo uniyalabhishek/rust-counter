@@ -4,11 +4,10 @@
   "version": "0.0.1",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
-    "build:counter": "cd contracts/counter && cargo build --target wasm32-unknown-unknown --release",
-    "postbuild:counter": "cp contracts/counter/target/wasm32-unknown-unknown/release/rust_counter_tutorial.wasm ./out/",
-    "build:donation": "cd contracts/donation && cargo build --target wasm32-unknown-unknown --release",
-    "postbuild:donation": "cp contracts/donation/target/wasm32-unknown-unknown/release/rust_donation_tutorial.wasm ./out/",
-    "build": "yarn build:counter && yarn build:donation",
+    "build:counter": "yarn build -p rust-counter-tutorial",
+    "build:donation": "yarn build -p rust-donation-tutorial",
+    "postbuild": "cp target/wasm32-unknown-unknown/release/*.wasm ./out/",
+    "build": "cargo build --target wasm32-unknown-unknown --release",
     "deploy:pages": "gh-pages -d src",
     "deploy": "echo \"Please see Deploying-contracts.md in this directory.\"",
     "deploy:dev": "yarn build && near dev-deploy",
@@ -18,7 +17,7 @@
     "start:dev": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
     "test:counter": "cd contracts/counter && cargo test -- --nocapture",
     "test:donation": "cd contracts/donation && cargo test -- --nocapture",
-    "test": "yarn build && yarn test:counter && yarn test:donation"
+    "test": "yarn build && jest && cargo test"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
