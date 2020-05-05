@@ -1,41 +1,28 @@
 const { Runtime } = require("near-sdk-as/runtime");
 const path = require("path");
 
-const contractPath = path.join(__dirname, "../out/main.wasm");
+const counterPath  = path.join(__dirname, "../out/rust_counter_tutorial.wasm");
+const donationPath = path.join(__dirname, "../out/rust_donation_tutorial.wasm");
 
 describe('Token', function () {
   let runtime;
-  let contract;
+  let counter;
 
-  function getCounter() {
-    return contract.view("get_num").return_data;
+  function getNum(name = "donation") {
+    return counter.view("get_num", {account: name }).return_data;
   }
 
   beforeAll(function () {
     runtime = new Runtime();
-    contract = runtime.newAccount("counter", contractPath);
+    counter = runtime.newAccount("counter", counterPath);
+    donation = runtime.newAccount("donation", donationPath);
   });
 
-  describe('counter', function () {
-    it('can be incremented', function () {
-      const startCounter = getCounter() 
-      expect(startCounter).toEqual(0);
-      contract.call("increment");
-      const endCounter = getCounter()
-      expect(endCounter).toEqual(startCounter + 1);
+  describe('donation', function () {
+    it('can increment counter', function () {
+      expect(getNum()).toBe(0);
+      donation.call("increment_my_number", {account_id: "counter"});
+      expect(getNum()).toBe(1);
     });
-
-    it('can be decremented', function () {
-      const startCounter = getCounter()
-      contract.call("decrement");
-      const endCounter = getCounter()
-      expect(endCounter).toEqual(startCounter - 1);
-    });
-
-    it("should be resetable", () => {
-      contract.call("increment");
-      contract.call("reset");
-      expect(getCounter()).toEqual(0);
-    })
   });
 });

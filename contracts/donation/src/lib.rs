@@ -29,6 +29,8 @@ impl Donation {
     pub fn increment_my_number(&mut self, account_id: AccountId) {
         // The 0 is the amount of NEAR (Ⓝ) to send.
         // The final parameter is the amount of (extra) gas to add.
+        let log_message = format!("Donating to {}", account_id);
+        env::log(log_message.as_bytes());
         ext::increment(&account_id, 0, SINGLE_CALL_GAS);
     }
 }
