@@ -75,3 +75,10 @@ cargo test -- --nocapture
 - `src/index.html` for the front-end HTML
 - `src/main.js` for the JavaScript front-end code and how to integrate contracts
 - `src/test.js` for the JS tests for the contract
+
+## To Build the Documentation
+
+```
+cd contract
+cargo doc --no-deps --open
+```
