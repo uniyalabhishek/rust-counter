@@ -1378,6 +1378,11 @@ array-unique@^0.3.2:
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
 
+ascii-table@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/ascii-table/-/ascii-table-0.0.9.tgz#06a6604d6a55d4bf41a9a47d9872d7a78da31e73"
+  integrity sha1-BqZgTWpV1L9BqaR9mHLXp42jHnM=
+
 asn1.js@^4.0.0:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-4.10.1.tgz#b9c2bf5805f1e64aadeed6df3a2bfafb5a73f5a0"
@@ -1591,6 +1596,11 @@ bn.js@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.1.tgz#48efc4031a9c4041b9c99c6941d903463ab62eb5"
   integrity sha512-IUTD/REb78Z2eodka1QZyyEk66pciRcP6Sroka0aI3tG/iwIdYLrBD62RsubR7vqdt3WyX8p4jxeatzmRSphtA==
+
+bn.js@^5.1.1:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.2.tgz#c9686902d3c9a27729f43ab10f9d79c2004da7b0"
+  integrity sha512-40rZaf3bUNKTVYu9sIeeEGOg7g14Yvnj9kH7b50EiwX0Q7A6umbvfI5tvHaOERH0XigqKkfLkFQxzb4e6CIXnA==
 
 boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
@@ -5129,10 +5139,10 @@ ncp@^2.0.0:
   resolved "https://registry.yarnpkg.com/ncp/-/ncp-2.0.0.tgz#195a21d6c46e361d2fb1281ba38b91e9df7bdbb3"
   integrity sha1-GVoh1sRuNh0vsSgbo4uR6d9727M=
 
-near-api-js@^0.23.1, near-api-js@^0.23.2:
-  version "0.23.2"
-  resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-0.23.2.tgz#649987cc516ac3d7d433879b5ba4e2378407cc13"
-  integrity sha512-cTldfMCI0fSaoPolRgMAKbQ4qBx4CXfM2MMUYbM7sce9l9IIUjm3BkKg1Kgdhhie07QAd8iuWMst10zArlK2FQ==
+near-api-js@^0.25.0, near-api-js@^0.25.1:
+  version "0.25.1"
+  resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-0.25.1.tgz#4b2c05cc929cc42b76898ca12939aafc083505e9"
+  integrity sha512-z0LpHA+CmbOreaTCEl91/cus9K/S+hC3zLMf6L6UyxY+GUNDV1OqlvTZzsbrHxFnlbK45ZwebtZeOtLPOrDceQ==
   dependencies:
     "@types/bn.js" "^4.11.5"
     bn.js "^5.0.0"
@@ -5145,11 +5155,13 @@ near-api-js@^0.23.1, near-api-js@^0.23.2:
     text-encoding-utf-8 "^1.0.2"
     tweetnacl "^1.0.1"
 
-near-shell@~0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/near-shell/-/near-shell-0.22.0.tgz#418b35ddb87d1013a890a036df6db2cd54f9df77"
-  integrity sha512-scmG9ppvFDP6CBJsliNrwz9nWAwbVcfw1p7JVgld+UGFOFBD98hHB9r5gqLHTVR7CzHqIaz/6scoX+RjThwIbg==
+near-shell@~0.23.2:
+  version "0.23.2"
+  resolved "https://registry.yarnpkg.com/near-shell/-/near-shell-0.23.2.tgz#339fec492870af5bedfae90665ccc459ee5fc918"
+  integrity sha512-EVX1b7+wzRG4Zn3t+yg0ZQK6/nBmnp2YAzj78Q93Nl5xzKKatiLRuzQBTK7tQXPm4ucpvBrjZTXviT+/RaYNuA==
   dependencies:
+    ascii-table "0.0.9"
+    bn.js "^5.1.1"
     bs58 "^4.0.1"
     chalk "^4.0.0"
     flagged-respawn "^1.0.1"
@@ -5157,7 +5169,7 @@ near-shell@~0.22.0:
     jest-environment-node "^26.0.0"
     mixpanel "^0.11.0"
     ncp "^2.0.0"
-    near-api-js "^0.23.1"
+    near-api-js "^0.25.0"
     open "^7.0.1"
     rimraf "^3.0.0"
     stoppable "^1.1.0"
