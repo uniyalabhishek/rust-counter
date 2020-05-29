@@ -20,7 +20,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[derive(Default, BorshDeserialize, BorshSerialize)]
 pub struct Counter {
     // See more data types at https://doc.rust-lang.org/book/ch03-02-data-types.html
-    val: i8, // i8 is signed. unsigned integers are also available: u8, u16, u32, u64, u128
+    val: i32, // i8 is signed. unsigned integers are also available: u8, u16, u32, u64, u128
 }
 
 #[near_bindgen]
@@ -36,7 +36,7 @@ impl Counter {
     /// ```bash
     /// near view counter.YOU.testnet get_num
     /// ```
-    pub fn get_num(&self) -> i8 {
+    pub fn get_num(&self) -> i32 {
         return self.val;
     }
 
@@ -49,13 +49,13 @@ impl Counter {
     /// ```bash
     /// near call counter.YOU.testnet increment --accountId donation.YOU.testnet
     /// ```
-    pub fn increment(&mut self) {
+    pub fn increment(&mut self, amount: i32) {
         // note: adding one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
-        self.val += 1;
+        self.val += amount;
         let log_message = format!("Increased number to {}", self.val);
         env::log(log_message.as_bytes());
-        after_counter_change();
+        // after_counter_change();
     }
 
     /// Decrement (subtract from) the counter.
@@ -66,13 +66,13 @@ impl Counter {
     /// ```bash
     /// near call counter.YOU.testnet decrement --accountId donation.YOU.testnet
     /// ```
-    pub fn decrement(&mut self) {
+    pub fn decrement(&mut self, amount: i32) {
         // note: subtracting one like this is an easy way to accidentally overflow
         // real smart contracts will want to have safety checks
-        self.val -= 1;
+        self.val -= amount;
         let log_message = format!("Decreased number to {}", self.val);
         env::log(log_message.as_bytes());
-        after_counter_change();
+        // after_counter_change();
     }
 
     /// Reset to zero.
@@ -86,10 +86,10 @@ impl Counter {
 // unlike the struct's functions above, this function cannot use attributes #[derive(…)] or #[near_bindgen]
 // any attempts will throw helpful warnings upon 'cargo build'
 // while this function cannot be invoked directly on the blockchain, it can be called from an invoked function
-fn after_counter_change() {
-    // show helpful warning that i8 (8-bit signed integer) will overflow above 127 or below -128
-    env::log("Make sure you don't overflow, my friend.".as_bytes());
-}
+// fn after_counter_change() {
+//     // show helpful warning that i32 (8-bit signed integer) will overflow above 127 or below -128
+//     env::log("Make sure you don't overflow, my friend.".as_bytes());
+// }
 
 /*
  * the rest of this file sets up unit tests
