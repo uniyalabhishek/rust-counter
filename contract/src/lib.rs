@@ -8,7 +8,8 @@
 //! [get_num]: struct.Counter.html#method.get_num
 //! [reset]: struct.Counter.html#method.reset
 
-use borsh::{BorshDeserialize, BorshSerialize};
+use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::wee_alloc;
 use near_sdk::{env, near_bindgen};
 
 #[global_allocator]
