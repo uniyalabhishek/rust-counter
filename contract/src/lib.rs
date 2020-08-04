@@ -46,7 +46,7 @@ impl Counter {
     ///
     /// Note, the parameter is &self (without being mutable) meaning it doesn't modify state.
     /// In the frontend (/src/main.js) this is added to the "viewMethods" array
-    /// using near-shell we can call this by:
+    /// using near-cli we can call this by:
     ///
     /// ```bash
     /// near view counter.YOU.testnet get_num '{"account": "donation.YOU.testnet"}'
@@ -82,7 +82,7 @@ impl Counter {
     ///
     /// Note, the parameter is "&mut self" as this function modifies state.
     /// In the frontend (/src/main.js) this is added to the "changeMethods" array
-    /// using near-shell we can call this by:
+    /// using near-cli we can call this by:
     ///
     /// ```bash
     /// near call counter.YOU.testnet increment --accountId donation.YOU.testnet
@@ -106,7 +106,7 @@ impl Counter {
     /// Decrement (subtract from) the counter *per account* that calls it.
     ///
     /// In (/src/main.js) this is also added to the "changeMethods" array
-    /// using near-shell we can call this by:
+    /// using near-cli we can call this by:
     ///
     /// ```bash
     /// near call counter.YOU.testnet decrement --accountId donation.YOU.testnet
