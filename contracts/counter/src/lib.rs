@@ -34,7 +34,7 @@ impl Counter {
     /// returns 8-bit signed integer representing the number for the account argument
     // note the parameter is &self (without being mutable) meaning it doesn't modify state
     // in the frontend (/src/main.js) this is added to the "viewMethods" array
-    // using near-shell we can call this by:
+    // using near-cli we can call this by:
     // near view counter.YOU.testnet get_num '{"account": "donation.YOU.testnet"}'
     pub fn get_num(&self, account: AccountId) -> i8 {
         // call our first private function
@@ -64,7 +64,7 @@ impl Counter {
     /// increment the counter *per account* that calls it
     // note the parameter is "&mut self" as this function modifies state
     // in the frontend (/src/main.js) this is added to the "changeMethods" array
-    // using near-shell we can call this by:
+    // using near-cli we can call this by:
     // near call counter.YOU.testnet increment --accountId donation.YOU.testnet
     pub fn increment(&mut self) {
         // note: adding one like this is an easy way to accidentally overflow
@@ -84,7 +84,7 @@ impl Counter {
 
     /// decrement (subtract from) the counter *per account* that calls it
     // in (/src/main.js) this is also added to the "changeMethods" array
-    // using near-shell we can call this by:
+    // using near-cli we can call this by:
     // near call counter.YOU.testnet decrement --accountId donation.YOU.testnet
     pub fn decrement(&mut self) {
         // note: subtracting one like this is an easy way to accidentally overflow
